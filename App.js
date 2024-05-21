@@ -7,16 +7,19 @@ import { Text, View } from "react-native";
 export default function App() {
   const [data, setData] = useState("");
   useEffect(() => {
-    axios.get("http://localhost:3000/lll").then((res) => {
+    axios.get("http://localhost:9090/users").then((res) => {
+      console.log("fetched data", res.data);
       setData(res.data);
     });
-  });
+  }, []);
 
   return (
-    <View>
-      <Text>Open up App.js to start working on your app!</Text>
-      {data && <Text>{data.name}</Text>}
-    </View>
+    <>
+      <View>
+        <Text>Open up App.js to start working on your app!</Text>
+      </View>
+      {data && <Text>welcome {data[1]["firstName"]}</Text>}
+    </>
 
     // <View style={styles.container}>
     //   <Text>Open up App.js to start working on your app!</Text>

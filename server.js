@@ -1,9 +1,15 @@
 const express = require("express");
 const app = express();
 const { MongoClient } = require("mongodb");
-import { configDotenv } from "dotenv";
+const cors = require("cors");
 
 app.use(express.json());
+app.use(cors());
+
+const uri =
+  "mongodb+srv://xrssun:3W0uGdjh5gec8dKX@cluster0.z60yugb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+const client = new MongoClient(uri);
 
 async function main() {
   const uri =
@@ -31,6 +37,8 @@ async function main() {
     await client.close();
   }
 }
+
+// main().catch(console.error);
 
 async function getProducts(client) {
   const result = await client
@@ -63,12 +71,31 @@ async function getAllUsers(client) {
   const result = await client.db("trailblaze").collection("users").toArray();
 }
 
-main().catch(console.error);
-
 app.get("/", async (req, res) => {
   // const tosend = await main();
   // res.send({ tosend });
   res.status(200).send("hello world!!");
 });
+
+app.get("/users", async (req, res) => {
+  const result = await client
+    .db("trailblaze")
+    .collection("users")
+    .find({})
+    .toArray();
+  console.log("users", result);
+  res.status(200).send(result);
+});
+
+app.get("/users/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  const user = await client
+    .db("trailblaze")
+    .collection("users")
+    .findOne({ id: JSON.parse(user_id) });
+  res.status(200).send(user);
+});
+
+app.post("/users/");
 
 app.listen(9090, () => console.log("App listening on port 9090!"));
